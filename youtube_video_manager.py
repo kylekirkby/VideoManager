@@ -117,6 +117,53 @@ class YouTubeVideoManager:
                         http=creds.authorize(httplib2.Http()))
 
 
+    def get_video_id_based_on_session_id(self, session_id):
+        """
+            Retrieve a video id of a YouTube video based on a session_id
+        """
+        current_videos = self.get_current_youtube_videos_based_on_string(session_id)
+        if len(current_videos) == 1:
+            return current_videos[0][1]
+        else:
+            return False
+
+    def update_video_status(self, video_id, status):
+        """
+            This method updates the status of a video based on the video_id and status provided.
+        """
+        # Call the API's videos.list method to retrieve the video resource.
+        # Get the current video details
+        videos_list_response = self.service.videos().list(
+            id=video_id,
+            part='status'
+        ).execute()
+
+        # If the response does not contain an array of 'items' then the video was
+        # not found.
+        if not videos_list_response['items']:
+            return False
+
+        # Since the request specified a video ID, the response only contains one
+        # video resource. This code extracts the snippet from that resource.
+        video_list_status = videos_list_response['items'][0]['status']
+        print(video_list_status)
+        input()
+
+        # Set the privacy status of the video
+        if status:
+            video_list_status['privacyStatus'] = status
+
+        # Update the video resource by calling the videos.update() method.
+        videos_update_response = self.service.videos().update(
+            part='status',
+            body=dict(
+            status=video_list_status,
+            id=video_id
+            )).execute()
+
+        return True
+
+
     def get_current_youtube_videos_based_on_string(self, string):
         """
             Gets the current videos on YouTube that contain the specified string in
@@ -266,8 +313,8 @@ class YouTubeVideoManager:
 
 if __name__ == "__main__":
     video_manager = YouTubeVideoManager()
-    current_videos_on_youtube = video_manager.get_current_youtube_videos_based_on_string("yvr18")
-    print(current_videos_on_youtube)
+    # current_videos_on_youtube = video_manager.get_current_youtube_videos_based_on_string("yvr18")
+    # print(current_videos_on_youtube)
 
     # video_manager.upload_video({
     #         "file":"/home/kyle.kirkby/Documents/Marketing/Connect/YVR18/videos/yvr18-100k.mp4",
@@ -277,3 +324,6 @@ if __name__ == "__main__":
     #         "category": "28",
     #         "privacyStatus": "private"
     #     })
+    # updated = video_manager.update_video_status("cDgI_ov_w5Q", "unlisted")
+    updated = video_manager.get_video_id_based_on_session_id("yvr18-100k")
+    print(updated)
