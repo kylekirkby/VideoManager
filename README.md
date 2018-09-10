@@ -15,3 +15,12 @@ Script outputs the command needed to snyc the passed in directory of videos with
 - pip install --upgrade google-auth google-auth-oauthlib google-auth-httplib2
 
 
+## Example usage
+
+Below is an example of how to use the script from the command line. Supply a video directory, universal string to check videos on YouTube with and the 
+option -V verbose flag.
+
+```bash
+$ python3 main.py  '/home/kyle.kirkby/Documents/Marketing/Connect/YVR18/videos' YVR18 -V
+
+```
