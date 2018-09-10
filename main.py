@@ -141,23 +141,25 @@ class ConnectVideoManager:
                 video_session_id = self.get_session_id_from_video(video)
                 if self._verbose:
                     print(self.output_ok_blue("Checking if the {0} video is on YouTube...".format(video_session_id)))
+                # Check in current videos for video
+                on_youtube = False
                 for current_video in current_videos_on_youtube:
                     if current_video[0] == video_session_id.lower():
                         if self._verbose:
                             print(self.warning("Video for {0} already on the LinaroOrg YouTube...".format(video_session_id)))
-                        pass
-                    else:
-                        if self._verbose:
-                            print(self.warning("Uploading {0} to the LinaroOrg YouTube...".format(video_session_id)))
-                        video_upload_request = {
-                            "file":video,
-                            "title": video_session_id,
-                            "description": video_session_id,
-                            "keywords": video_session_id,
-                            "category": "28",
-                            "privacyStatus": "private"
-                        }
-                        self.video_manager.upload_video(video_upload_request)
+                        on_youtube = True
+                if not on_youtube:
+                    if self._verbose:
+                        print(self.warning("Uploading {0} to the LinaroOrg YouTube...".format(video_session_id)))
+                    video_upload_request = {
+                        "file":video,
+                        "title": video_session_id,
+                        "description": video_session_id,
+                        "keywords": video_session_id,
+                        "category": "28",
+                        "privacyStatus": "private"
+                    }
+                    self.video_manager.upload_video(video_upload_request)
         else:
             # Upload the videos supplied
             for video in videos_in_directory:
