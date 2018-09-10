@@ -100,18 +100,14 @@ class ConnectVideoManager:
     
         print(videos_in_directory)
 
-        # Run S3 Command to sync videos to private folder
-        synced_with_s3 = self.sync_with_s3(self.video_directory)
-
         # Sync vidoes with YouTube
         synced_with_youtube = self.sync_with_youtube(current_videos_on_youtube, videos_in_directory)
-
 
         if self._verbose:
             print(self.output_ok_blue("{0} video(s) found.".format(len(videos_in_directory))))
 
-        # Sync list of current videos on YouTube with those in directory
-        # sync_with_youtube = self.sync_with_youtube(current_videos_on_youtube, videos_in_directory)
+        # Run S3 Command to sync videos to private folder
+        synced_with_s3 = self.sync_with_s3(self.video_directory)
 
     
     def get_videos_from_directory(self, directory):
@@ -177,9 +173,6 @@ class ConnectVideoManager:
                     }
                 self.video_manager.upload_video(video_upload_request)
         
-
-
-
     def get_session_id_from_video(self, video):
         """
             Extract the session id from a path to a video
@@ -192,7 +185,9 @@ class ConnectVideoManager:
         """
             Sync videos with the S3 private folder
         """
-        print(self.output_lg("$ aws s3 --profile ConnectAutomation sync {0} s3://connect.linaro.org/private/yvr18/".format(video_directory)))
+        # Separate commands through a \n line break
+        s3_command = "aws s3 --profile ConnectAutomation sync {0} s3://connect.linaro.org/private/yvr18/".format(video_directory)
+        print(self.output_lg(s3_command))
 
     def output_lg(self, message):
         return(TermColours.LIGHT_GREY + message + TermColours.ENDC)
