@@ -1,2 +1,3 @@
 client*.json
 __pycache__/*
+youtube_video_manager-oauth2.json
